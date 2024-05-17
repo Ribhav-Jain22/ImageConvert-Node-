@@ -1,0 +1,66 @@
+Steps for Creating and Packaging a Node.js Lambda Function with Sharp
+
+1. Create a new directory for your project:
+   mkdir src
+   cd src
+
+2. Initialize a new Node.js project:
+   npm init -y
+
+3. Install the Sharp library:
+   npm install sharp
+
+4. Create the Lambda function file (e.g., index.js):
+   touch index.js
+
+5. Write the Lambda function code:
+   Open index.js and add the following code:
+
+   const sharp = require('sharp');
+
+   exports.handler = async (event) => {
+       // Get the input image data from the event
+       const inputImageData = event.image_data;
+
+       // Decode the base64 image data
+       const imageBuffer = Buffer.from(inputImageData, 'base64');
+
+       // Resize the image using Sharp
+       const resizedImageBuffer = await sharp(imageBuffer)
+           .resize(40, 40)
+           .toBuffer();
+
+       // Encode the resized image data to base64
+       const resizedImageBase64 = resizedImageBuffer.toString('base64');
+
+       return {
+           statusCode: 200,
+           headers: {'Content-Type': 'application/json'},
+           body: JSON.stringify({resized_image_data: resizedImageBase64})
+       };
+   };
+
+6. Create a package.json file:
+   Ensure your package.json file includes the following fields:
+
+   {
+     "name": "src",
+     "version": "1.0.0",
+     "description": "AWS Lambda function to resize images using Sharp",
+     "main": "index.js",
+     "dependencies": {
+       "sharp": "^0.29.1"
+     }
+   }
+
+7. Zip the project files:
+   In your project directory, use the zip command:
+
+   # Ensure you are in the project directory
+   cd image-resize
+
+   # Zip the contents
+   zip -r ../lambda_function.zip *
+
+8. Upload the deployment package:
+   Upload the lambda_function.zip file to AWS Lambda via the AWS Management Console or AWS CLI.
