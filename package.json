@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "sharp": "^0.33.3"
+  },
+  "optionalDependencies": {
+    "@img/sharp-win32-x64": "^0.33.3"
+  }
+}
